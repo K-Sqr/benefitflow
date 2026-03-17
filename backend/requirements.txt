@@ -1,0 +1,6 @@
+fastapi
+requests
+resend
+pydantic
+python-dotenv
+uvicorn

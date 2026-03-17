@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Build output
+.next/
+out/
+build/
+dist/
+
+# Environment files (use .env.example as template)
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# TypeScript generated
+*.tsbuildinfo
+next-env.d.ts
+
+# Misc
+*.pem
+.vercel
+coverage/
+__MACOSX/
