@@ -52,7 +52,7 @@ const TRANSLATIONS_EN = {
   heroSubtitle:
     "No 20-page forms. No complicated legal jargon. A 2nd-grade level conversation in your native language is all it takes.",
   demoModeHint:
-    "Demo mode. Add NEXT_PUBLIC_VAPI_PUBLIC_KEY and NEXT_PUBLIC_VAPI_ASSISTANT_ID to my-app/.env.local and restart dev server for live calls.",
+    "Demo mode. Add NEXT_PUBLIC_VAPI_PUBLIC_KEY and NEXT_PUBLIC_VAPI_ASSISTANT_ID to client/.env.local and restart dev server for live calls.",
   btnStartCheckLive: "Start Your 2-Minute Check",
   btnStartCheckDemo: "Check My Eligibility in 2 Minutes",
   endCall: "End call",
@@ -77,7 +77,7 @@ const TRANSLATIONS_ES = {
   heroSubtitle:
     "Sin formularios de 20 páginas. Sin jerga legal complicada. Solo hace falta una conversación en tu idioma.",
   demoModeHint:
-    "Modo demo. Añade NEXT_PUBLIC_VAPI_PUBLIC_KEY y NEXT_PUBLIC_VAPI_ASSISTANT_ID en my-app/.env.local y reinicia el servidor.",
+    "Modo demo. Añade NEXT_PUBLIC_VAPI_PUBLIC_KEY y NEXT_PUBLIC_VAPI_ASSISTANT_ID en client/.env.local y reinicia el servidor.",
   btnStartCheckLive: "Inicia tu verificación de 2 minutos",
   btnStartCheckDemo: "Verificar mi elegibilidad en 2 minutos",
   endCall: "Terminar llamada",
@@ -102,7 +102,7 @@ const TRANSLATIONS_HI = {
   heroSubtitle:
     "20 पन्नों के फ़ॉर्म नहीं। कोई पेचीदा कानूनी शब्दजाल नहीं। बस अपनी भाषा में बातचीत।",
   demoModeHint:
-    "डेमो मोड। my-app/.env.local में NEXT_PUBLIC_VAPI_PUBLIC_KEY और NEXT_PUBLIC_VAPI_ASSISTANT_ID जोड़ें और सर्वर रीस्टार्ट करें।",
+    "डेमो मोड। client/.env.local में NEXT_PUBLIC_VAPI_PUBLIC_KEY और NEXT_PUBLIC_VAPI_ASSISTANT_ID जोड़ें और सर्वर रीस्टार्ट करें।",
   btnStartCheckLive: "2-मिनट की जाँच शुरू करें",
   btnStartCheckDemo: "2 मिनट में अपनी पात्रता जाँचें",
   endCall: "कॉल समाप्त करें",
@@ -128,7 +128,7 @@ const TRANSLATIONS_HMN = {
   heroSubtitle:
     "Tsis muaj daim fom 20 nplooj. Tsis muaj lus lag luam. Ib cov lus sib tham hauv koj lus xwb.",
   demoModeHint:
-    "Demo. Ntxiv NEXT_PUBLIC_VAPI_PUBLIC_KEY thiab NEXT_PUBLIC_VAPI_ASSISTANT_ID rau my-app/.env.local thiab tawm server dua.",
+    "Demo. Ntxiv NEXT_PUBLIC_VAPI_PUBLIC_KEY thiab NEXT_PUBLIC_VAPI_ASSISTANT_ID rau client/.env.local thiab tawm server dua.",
   btnStartCheckLive: "Pib koj 2 feeb xyuas",
   btnStartCheckDemo: "Xyuas kuv txoj kev tsim nyog hauv 2 feeb",
   endCall: "Kaw tus cu",
@@ -154,7 +154,7 @@ const TRANSLATIONS_SO = {
   heroSubtitle:
     "Ma jiraan foomar 20 bog. Erayada sharciga adag ma jiraan. Waa wada hadal luqaddaada oo kaliya.",
   demoModeHint:
-    "Demo. Ku dar NEXT_PUBLIC_VAPI_PUBLIC_KEY iyo NEXT_PUBLIC_VAPI_ASSISTANT_ID my-app/.env.local oo dib u bilow serverka.",
+    "Demo. Ku dar NEXT_PUBLIC_VAPI_PUBLIC_KEY iyo NEXT_PUBLIC_VAPI_ASSISTANT_ID client/.env.local oo dib u bilow serverka.",
   btnStartCheckLive: "Bilow baadhitaanka 2 daqiiqo",
   btnStartCheckDemo: "Baadh u qalantaada 2 daqiiqo",
   endCall: "Xir wada hadalka",

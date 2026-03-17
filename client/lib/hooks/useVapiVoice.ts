@@ -156,7 +156,7 @@ export function useVapiVoice(options: UseVapiVoiceOptions = {}) {
   const startCall = useCallback(async () => {
     const { assistantId } = getVapiConfig();
     if (!vapiRef.current || !assistantId) {
-      setError("Vapi not configured. Add NEXT_PUBLIC_VAPI_PUBLIC_KEY and NEXT_PUBLIC_VAPI_ASSISTANT_ID to .env.local in the my-app folder.");
+      setError("Vapi not configured. Add NEXT_PUBLIC_VAPI_PUBLIC_KEY and NEXT_PUBLIC_VAPI_ASSISTANT_ID to .env.local in the client folder.");
       return;
     }
     setError(null);
