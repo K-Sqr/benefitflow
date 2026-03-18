@@ -16,6 +16,7 @@ app.add_middleware(
     allow_origins=[
         "https://www.benefitflow.me",
         "https://benefitflow.me",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -25,8 +26,33 @@ app.add_middleware(
 
 # Configuration
 vapi_key = os.getenv("VAPI_SECRET_KEY")
-openai_key = os.getenv("OPENAI_API_KEY")
+gemini_key = os.getenv("GEMINI_API_KEY")
 resend_key = os.getenv("RESEND_API_KEY")
+
+GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+
+
+def _gemini_chat(system: str, user: str, *, timeout: int = 30) -> str:
+    """Send a chat request to Gemini and return the text response."""
+    if not gemini_key:
+        raise RuntimeError("GEMINI_API_KEY is not set on the backend.")
+    resp = requests.post(
+        GEMINI_URL,
+        params={"key": gemini_key},
+        json={
+            "system_instruction": {"parts": [{"text": system}]},
+            "contents": [{"parts": [{"text": user}]}],
+            "generationConfig": {"responseMimeType": "application/json"},
+        },
+        timeout=timeout,
+    )
+    data = resp.json()
+    if not resp.ok:
+        err = data.get("error", {})
+        msg = err.get("message", "") if isinstance(err, dict) else str(data)
+        raise RuntimeError(f"Gemini API error ({resp.status_code}): {msg}")
+    return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
 class ReportRequest(BaseModel):
@@ -174,29 +200,12 @@ SNAP_CHECKLIST_BASE = [
 
 
 def analyze_transcript(transcript: str):
-    """Extract SNAP data from transcript for the email. Returns dict with checklist, zip."""
-    response = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {openai_key}"},
-        json={
-            "model": "gpt-4o-mini",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": """You extract SNAP/benefits data from an assistant's transcript (what the AI said during the call). Ignore any user/customer lines; use only the assistant's statements to infer zip and checklist. Return JSON with:
+    """Extract SNAP data from transcript for the email. Returns JSON string with checklist, zip."""
+    system = """You extract SNAP/benefits data from an assistant's transcript (what the AI said during the call). Ignore any user/customer lines; use only the assistant's statements to infer zip and checklist. Return JSON with:
 - zip: string (5-digit zip code if mentioned by the assistant, else "")
 - checklist: array of ADDITIONAL or specific document names based on what the assistant learned. Examples: if they have a job → "Last 30 days of pay stubs". If they rent → "Lease or rent agreement". If they have bank accounts → "Bank statements (last 30 days)". If they get child support → "Child support documentation". If they have child care costs → "Child care provider statement". If 60+ or disabled → "Medical expense bills". If self-employed → "Self-employment records or tax return". If they have a car → "Vehicle registration". Keep each item under 12 words. Only include items that fit the situation; we will merge with a full standard list.
-Return only valid JSON.""",
-                },
-                {
-                    "role": "user",
-                    "content": f"Assistant transcript (AI side only):\n{transcript}",
-                },
-            ],
-            "response_format": {"type": "json_object"},
-        },
-    )
-    return response.json()["choices"][0]["message"]["content"]
+Return only valid JSON."""
+    return _gemini_chat(system, f"Assistant transcript (AI side only):\n{transcript}")
 
 
 @app.post("/generate-report")
@@ -284,7 +293,7 @@ async def generate_report(request: ReportRequest):
         t = _email_translations(lang)
 
         # Translate checklist to target language when not English
-        if lang != "en" and checklist and openai_key:
+        if lang != "en" and checklist and gemini_key:
             try:
                 lang_name = {
                     "es": "Spanish",
@@ -292,36 +301,18 @@ async def generate_report(request: ReportRequest):
                     "hmn": "Hmong",
                     "so": "Somali",
                 }.get(lang, lang)
-                resp = requests.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {openai_key}"},
-                    json={
-                        "model": "gpt-4o-mini",
-                        "messages": [
-                            {
-                                "role": "system",
-                                "content": f"Translate each of the following lines into {lang_name}. Return a JSON object with a single key 'items' whose value is an array of translated strings in the same order. One translation per line.",
-                            },
-                            {"role": "user", "content": "\n".join(checklist)},
-                        ],
-                        "response_format": {"type": "json_object"},
-                    },
+                raw = _gemini_chat(
+                    f"Translate each of the following lines into {lang_name}. Return a JSON object with a single key 'items' whose value is an array of translated strings in the same order. One translation per line.",
+                    "\n".join(checklist),
                     timeout=15,
                 )
-                if resp.ok:
-                    raw = (
-                        resp.json()
-                        .get("choices", [{}])[0]
-                        .get("message", {})
-                        .get("content", "{}")
-                    )
-                    data_tr = json.loads(raw) if isinstance(raw, str) else raw
-                    if isinstance(data_tr, dict):
-                        translated = data_tr.get("items", data_tr.get("translations"))
-                        if isinstance(translated, list) and len(translated) == len(
-                            checklist
-                        ):
-                            checklist = translated
+                data_tr = json.loads(raw) if isinstance(raw, str) else raw
+                if isinstance(data_tr, dict):
+                    translated = data_tr.get("items", data_tr.get("translations"))
+                    if isinstance(translated, list) and len(translated) == len(
+                        checklist
+                    ):
+                        checklist = translated
             except Exception:
                 pass  # keep checklist in English on failure
 
@@ -354,7 +345,7 @@ async def generate_report(request: ReportRequest):
             f"✦ {t['subject']}" if not t["subject"].startswith("✦") else t["subject"]
         )
         params = {
-            "from": "BenefitFlow <hello@tryzerotrigger.com>",
+            "from": "BenefitFlow <hello@benefitflow.me>",
             "to": [request.email],
             "subject": subject,
             "html": f"""
