@@ -29,7 +29,7 @@ vapi_key = os.getenv("VAPI_SECRET_KEY")
 gemini_key = os.getenv("GEMINI_API_KEY")
 resend_key = os.getenv("RESEND_API_KEY")
 
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash-lite"
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 
