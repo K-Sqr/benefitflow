@@ -108,6 +108,7 @@ export default function Home() {
     startCall,
     endCall,
     isCallActive,
+    isAssistantSpeaking,
     userTranscript,
     lastAssistantMessage,
     error: vapiError,
@@ -254,8 +255,8 @@ export default function Home() {
             />
           </div>
           <div className="flex flex-col items-center justify-center flex-1 max-w-lg mx-auto">
-            <div className="w-full max-w-md mb-6 h-[400px] relative">
-              <Orb hue={120} backgroundColor="transparent" />
+            <div className="w-full max-w-md mb-6 h-[320px] relative flex items-center justify-center">
+              <Orb isSpeaking={isAssistantSpeaking} isActive={isCallActive} />
             </div>
             <p className="text-center text-lg font-medium text-[#111827] mb-8">
               {displayAiMessage}
